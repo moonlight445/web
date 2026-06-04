@@ -1,6 +1,6 @@
+import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-
-from .biba import app
+from main_app import app
 
 app.add_middleware(
     CORSMiddleware,
@@ -8,3 +8,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+if __name__ == "__main__":
+    uvicorn.run("main_app:app")
