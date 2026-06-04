@@ -1,8 +1,10 @@
 from fastapi.middleware.cors import CORSMiddleware
 
+from .biba import app
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # В продакшене укажите адрес вашего фронтенда
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
