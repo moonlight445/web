@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi.middleware.cors import CORSMiddleware
-from main_app import app
+
+from backend.main_app import app
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,4 +12,4 @@ app.add_middleware(
 
 
 if __name__ == "__main__":
-    uvicorn.run("main_app:app")
+    uvicorn.run("backend.main_app:app")
