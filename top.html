@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniTaste | Топ аниме</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .top-section {
+            background: rgba(255, 255, 255, 0.98);
+            color: #000000;
+            padding: 50px 20px;
+            margin-bottom: 50px;
+            border: 4px solid #000000;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .top-section h2 {
+            color: #000000;
+            font-size: 2.5em;
+            text-transform: uppercase;
+            border-bottom: 4px solid #000000;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        .top-anime-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .anime-item {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 3px solid #000000;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            gap: 25px;
+        }
+        .anime-item:hover {
+            transform: translateX(10px);
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.3);
+        }
+        .anime-rank {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ff6b6b;
+            min-width: 60px;
+            text-align: center;
+        }
+        .anime-thumb-container {
+            width: 100px;
+            height: 140px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #f0f0f0;
+        }
+        .anime-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .anime-info { flex: 1; }
+        .anime-info h4 {
+            font-size: 1.3em;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .anime-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 1em;
+            flex-wrap: wrap;
+        }
+        .anime-score {
+            color: #ffa500;
+            font-weight: bold;
+        }
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.3em;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            .anime-item { flex-direction: column; text-align: center; }
+            .anime-meta { justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">НА ГЛАВНУЮ</a>
+            <a href="about.html" class="nav-link">О ПРОЕКТЕ</a>
+            <a href="top.html" class="nav-link">ТОП АНИМЕ</a>
+            <a href="seasonal.html" class="nav-link">В ЭФИРЕ</a>
+        </div>
+    </nav>
+
+    <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
+    
+    <div id="settingsModal" class="settings-modal">
+        <p>🔧 Настройки</p>
+        <div id="cookieStats"><p style="color: #999;">Нажмите "Показать cookies"</p></div>
+        <button onclick="showCookieStats()" class="settings-action-btn">📊 Показать cookies</button>
+        <button onclick="toggleSakura()" class="settings-action-btn" id="sakuraToggleBtn">🌸 Выключить сакуру</button>
+        <button onclick="clearAllCookies()" class="settings-action-btn danger">🗑️ Очистить cookies</button>
+    </div>
+
+    <main class="content">
+        <section class="top-section">
+            <h2>🏆 Топ аниме всех времён</h2>
+            <div id="topAnimeContainer">
+                <div class="loading">⏳ Загрузка топа...</div>
+            </div>
+        </section>
+    </main>
+
+    <footer><p>© 2026 Андрей Богдановский | AniTaste</p></footer>
+
+    <script src="sakura.js"></script>
+    <script src="cookies.js"></script>
+    <script src="anime-api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.style.opacity = '0.3';
+                    link.style.pointerEvents = 'none';
+                }
+            });
+
+            const topContainer = document.getElementById('topAnimeContainer');
+            if (topContainer) {
+                AnimeAPI.getTopAnime(50).then(anime => {
+                    AnimeDisplay.displayTopAnime(anime);
+                });
+            }
+        });
+
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        let isModalOpen = false;
+
+        function toggleSettings() {
+            isModalOpen = !isModalOpen;
+            if (isModalOpen) {
+                settingsBtn.classList.add('rotating');
+                setTimeout(() => { settingsModal.classList.add('active'); showCookieStats(); }, 300);
+                setTimeout(() => settingsBtn.classList.remove('rotating'), 600);
+            } else {
+                settingsBtn.classList.add('rotating');
+                settingsModal.classList.remove('active');
+                setTimeout(() => settingsBtn.classList.remove('rotating'), 600);
+            }
+        }
+
+        settingsBtn.addEventListener('click', toggleSettings);
+        document.addEventListener('click', (e) => {
+            if (isModalOpen && !settingsModal.contains(e.target) && !settingsBtn.contains(e.target)) toggleSettings();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isModalOpen) toggleSettings(); });
+    </script>
+
+
+
+<!-- AI Компаньон АиРин -->
+<script src="ai-companion.js"></script>
+</body>
+</html>

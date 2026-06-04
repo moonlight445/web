@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniTaste | Главная</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-link">НА ГЛАВНУЮ</a>
+            <a href="about.html" class="nav-link">О ПРОЕКТЕ</a>
+            <a href="top.html" class="nav-link">ТОП АНИМЕ</a>
+            <a href="seasonal.html" class="nav-link">В ЭФИРЕ</a>
+        </div>
+    </nav>
+
+    <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
+    
+    <div id="settingsModal" class="settings-modal">
+        <p>🔧 Настройки</p>
+        <div id="cookieStats"><p style="color: #999;">Нажмите "Показать cookies"</p></div>
+        <button onclick="showCookieStats()" class="settings-action-btn">📊 Показать cookies</button>
+        <button onclick="toggleSakura()" class="settings-action-btn" id="sakuraToggleBtn">🌸 Выключить сакуру</button>
+        <button onclick="clearAllCookies()" class="settings-action-btn danger">🗑️ Очистить cookies</button>
+    </div>
+
+    <main class="landing-page">
+        <h1 class="landing-title">AniTaste</h1>
+    </main>
+
+    <script src="sakura.js"></script>
+    <script src="cookies.js"></script>
+    <script>
+        // Скрытие активной ссылки
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.style.opacity = '0.3';
+                    link.style.pointerEvents = 'none';
+                }
+            });
+        });
+
+        // Настройки
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsModal = document.getElementById('settingsModal');
+        let isModalOpen = false;
+
+        function toggleSettings() {
+            isModalOpen = !isModalOpen;
+            if (isModalOpen) {
+                settingsBtn.classList.add('rotating');
+                setTimeout(() => { settingsModal.classList.add('active'); showCookieStats(); }, 300);
+                setTimeout(() => settingsBtn.classList.remove('rotating'), 600);
+            } else {
+                settingsBtn.classList.add('rotating');
+                settingsModal.classList.remove('active');
+                setTimeout(() => settingsBtn.classList.remove('rotating'), 600);
+            }
+        }
+
+        settingsBtn.addEventListener('click', toggleSettings);
+        document.addEventListener('click', (e) => {
+            if (isModalOpen && !settingsModal.contains(e.target) && !settingsBtn.contains(e.target)) toggleSettings();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && isModalOpen) toggleSettings(); });
+    </script>
+
+<!-- AI Компаньон АиРин -->
+<script src="ai-companion.js"></script>
+</body>
+</html>
